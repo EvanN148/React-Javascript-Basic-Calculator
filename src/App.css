@@ -1,0 +1,45 @@
+.page {
+  display: grid;
+  align-content: center;
+  justify-content: center;
+  grid-template-rows: 15vh 30vh 30vh;
+}
+
+.container {
+  display: grid;
+  width: 30vw;
+  height: 50vh;
+  border-style: solid;
+  border-color: black;
+  grid-template-rows: 10vh 40vh;
+  padding: 2px;  
+}
+
+.display {
+  display: block; 
+  border-style: solid;
+  border-color: black;
+  height: 6vh;  
+  padding: 2px;
+}
+
+.numpad {
+  display: grid; 
+  grid-template-rows: 25% 25% 25% 25%;
+}
+
+.button-row {
+  display: grid;
+  grid-template-columns: 25% 25% 25% 25%;
+}
+
+.button {
+  color: white; 
+  background-color: black;
+  margin: 2px;
+}
+
+.button-operator {
+  background-color: orange;
+  margin: 2px;
+}
