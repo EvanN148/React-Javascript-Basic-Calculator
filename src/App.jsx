@@ -7,102 +7,131 @@ export default class App extends React.Component {
     super(props);
 
     this.state = {
-      operationString: '',
-      trailingOperand: '',
-      operator: null,
-      result: 0,
+      base: 0,
+      operand: '',
+      operator: '',
+      display: ''
     }
 
-    this.appendOperationString = this.appendOperationString.bind(this);
-    this.setOperator = this.setOperator.bind(this);
-    this.handleOperation = this.handleOperation.bind(this);
+    this.appendInteger = this.appendInteger.bind(this)
+    this.calculate = this.calculate.bind(this)
     this.clearOperation = this.clearOperation.bind(this);
   }
 
-  appendOperationString(value) {
-    if (this.state.operator) {
-      let trailingValue = this.state.trailingOperand + value
-      this.setState({ trailingOperand: trailingValue, result: trailingValue })
-    } else {
-      let newValue = this.state.operationString + value;
-      this.setState({ operationString: newValue, result: newValue })
-    }
+  appendInteger(int) {
+    const newInt = this.state.operand + int.toString()
+    this.setState({ operand: newInt, display: newInt })
   }
 
-  setOperator(sym) {
-    this.setState({ operator: sym, result: sym })
-  }
-
-  handleOperation() {
-    const one = parseInt(this.state.operationString)
-    const two = parseInt(this.state.trailingOperand)
-
-    switch (this.state.operator) {
+  calculate(i, j, o, n) {
+    this.setState({ operator: n })
+    switch (o) {
       case '+':
-        let add = one + two;
-        this.setState({ result: add, operator: null })
-        break;
+        return i + j
       case '-':
-        let subtract = one - two;
-        this.setState({ result: subtract, operator: null })
-        break;
+        return i - j
       case '*':
-        let multiply = one * two;
-        this.setState({ result: multiply, operator: null })
-        break;
+        return i * j
       case '/':
-        let divide = one / two;
-        this.setState({ result: divide, operator: null })
-        break;
+        return i / j
+      case '=':
+        return this.state.base
     }
   }
 
   clearOperation() {
     this.setState({
-      operationString: '',
-      trailingOperand: '',
-      operator: null,
-      result: 0,
+      base: 0,
+      operand: '',
+      operator: '',
+      display: '',
+      clear: true
     })
   }
 
   render() {
     return (
-      <div className="page">
-      <div className="header">
-      </div>
       <div className="container">
-        <div className="display" >{this.state.result.toString()}</div>
-        <div className="numpad">
-          <div className="button-row" >
-            <button className="button" onClick={() => this.appendOperationString('7')} >7</button>
-            <button className="button" onClick={() => this.appendOperationString('8')} >8</button>
-            <button className="button" onClick={() => this.appendOperationString('9')} >9</button>
-            <button className="button-operator" onClick={() => this.setOperator('+')} >+</button>
+        <div className="header"></div>
+        <div className="calculator" >
+          <div className="display" >
+            <div >{this.state.base}</div>
+            <div >{this.state.operator}</div>
+            <div >{this.state.operand}</div>
           </div>
-          <div className="button-row">
-            <button className="button" onClick={() => this.appendOperationString('4')} >4</button>
-            <button className="button" onClick={() => this.appendOperationString('5')} >5</button>
-            <button className="button" onClick={() => this.appendOperationString('6')} >6</button>
-            <button className="button-operator" onClick={() => this.setOperator('-')} >-</button>
-          </div>
-          <div className="button-row">
-            <button className="button" onClick={() => this.appendOperationString('1')} >1</button>
-            <button className="button" onClick={() => this.appendOperationString('2')} >2</button>
-            <button className="button" onClick={() => this.appendOperationString('3')}>3</button>
-            <button className="button-operator" onClick={() => this.setOperator('*')} >*</button>
-          </div>
-          <div className="button-row" >
-            <button className="button-operator" onClick={() => this.clearOperation()}>c</button>
-            <button className="button" onClick={() => this.appendOperationString('0')} >0</button>
-            <button className="button-operator" onClick={() => this.handleOperation()} >=</button>
-            <button className="button-operator" onClick={() => this.setOperator('/')} >/</button>
+          <div className="numpad">
+            <div className="button-row" >
+              <button className="button" onClick={() => this.appendInteger(7)} >7</button>
+              <button className="button" onClick={() => this.appendInteger(8)} >8</button>
+              <button className="button" onClick={() => this.appendInteger(9)} >9</button>
+              <button className="button-operator" onClick={() => {
+                if (this.state.operator === '') {
+                  let base = this.state.operand !== '' ? parseInt(this.state.operand) : this.state.base
+                  this.setState({ base: base, operand: '', operator: '+' })
+                } else {
+                  let stagedOperator = this.state.operator
+                  let calculate = this.state.operand !== '' ? this.calculate(this.state.base, parseInt(this.state.operand), stagedOperator, '+') : this.state.base
+                  this.setState({ base: calculate, operand: '', display: calculate })
+                }
+
+              }} >+</button>
+            </div>
+            <div className="button-row">
+              <button className="button" onClick={() => this.appendInteger(4)} >4</button>
+              <button className="button" onClick={() => this.appendInteger(5)} >5</button>
+              <button className="button" onClick={() => this.appendInteger(6)} >6</button>
+              <button className="button-operator" onClick={() => {
+                if (this.state.operator === '') {
+                  let base = this.state.operand !== '' ? parseInt(this.state.operand) : this.state.base
+                  this.setState({ base: base, operand: '', operator: '-', display: base })
+                } else {
+                  let stagedOperator = this.state.operator
+                  let calculate = this.state.operand !== '' ? this.calculate(this.state.base, parseInt(this.state.operand), stagedOperator, '-') : this.state.base
+                  this.setState({ base: calculate, operand: '', display: calculate })
+                }
+              }} >-</button>
+            </div>
+            <div className="button-row">
+              <button className="button" onClick={() => this.appendInteger(1)} >1</button>
+              <button className="button" onClick={() => this.appendInteger(2)} >2</button>
+              <button className="button" onClick={() => this.appendInteger(3)}>3</button>
+              <button className="button-operator" onClick={() => {
+                if (this.state.operator === '') {
+                  let base = this.state.operand !== '' ? parseInt(this.state.operand) : this.state.base
+                  this.setState({ base: base, operand: '', operator: '*' })
+                } else {
+                  let stagedOperator = this.state.operator
+                  let calculate = this.state.operand !== '' ? this.calculate(this.state.base, parseInt(this.state.operand), stagedOperator, '*') : this.state.base
+                  this.setState({ base: calculate, operand: '', display: calculate })
+                }
+              }} >*</button>
+            </div>
+            <div className="button-row" >
+              <button className="button-operator" id="button-clear" onClick={() => this.clearOperation()}>clear</button>
+              <button className="button" onClick={() => this.appendInteger(0)} >0</button>
+              <button className="button-operator" onClick={() => {
+                let stagedOperator = this.state.operator
+                let result = this.calculate(this.state.base, parseInt(this.state.operand), stagedOperator, '')
+                this.setState({ base: result, operand: '', operator: '', display: result })
+              }} >=</button>
+              <button className="button-operator" id="button-divide" onClick={() => {
+                if (this.state.operator === '') {
+                  let base = this.state.operand !== '' ? parseInt(this.state.operand) : this.state.base
+                  this.setState({ base: base, operand: '', operator: '/' })
+                } else {
+                  let stagedOperator = this.state.operator
+                  let calculate = this.state.operand !== '' ? this.calculate(this.state.base, parseInt(this.state.operand), stagedOperator, '/') : this.state.base
+                  this.setState({ base: calculate, operand: '', display: calculate })
+                }
+              }}>/</button>
+            </div>
           </div>
         </div>
-      </div>
-      <div className="footer"></div >
+        <div className="footer"></div >
       </div>
     )
   }
 
 }
+
+
